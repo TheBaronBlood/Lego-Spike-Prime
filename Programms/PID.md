@@ -1,7 +1,9 @@
 ```mermaid
   graph TD;
       Input --> P;
-      A-->C;
-      B-->D;
-      C-->D;
+      Input --> I;
+      Input --> D;
+      P --> Output;
+      I --> Output;
+      D --> Output;
 ```
