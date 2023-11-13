@@ -1,5 +1,5 @@
 ```mermaid
-  graph RL;
+  graph LR;
       Input -->P;
       Input -->I;
       Input -->D;
