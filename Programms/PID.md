@@ -3,7 +3,9 @@
       Input -->P;
       Input -->I;
       Input -->D;
-      P -->Output;
-      I -->Output;
-      D -->Output;
+      P -->Motor;
+      I -->Motor;
+      D -->Motor;
+      Motor -->Sensor;
+      Sensor --> Input
 ```
