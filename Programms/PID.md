@@ -1,10 +1,1 @@
-```mermaid
-  graph LR;
-      Input -->P;
-      Input -->I;
-      Input -->D;
-      P -->Motor;
-      I -->Motor;
-      D -->Motor;
-      Motor -- Sensor --> Input
-```
+
