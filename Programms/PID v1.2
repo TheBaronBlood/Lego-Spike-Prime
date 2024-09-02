@@ -1,0 +1,63 @@
+import color_sensor, motor, runloop, motor_pair, distance_sensor, color
+from hub import port, button, sound, light_matrix
+import asyncio, time
+from app import linegraph
+
+async def main():
+    light_matrix.write("GO!")
+
+    pid_values = []
+    time_values = []# Liste zur Speicherung der Zeitwerte
+    i = 0
+    setPoint = 0
+
+    
+    ###########
+    Kp = 2.7 # 3.5 Hier wegenwir die Regler Werte
+    Kd = 0.8 # 0.4
+    Ki = 0.000004 # 0.000004
+    ###########
+    DriveSpeed = 190
+
+    L = 0
+    R = 0
+    I = 0
+    Error = 0
+    Last_Error = 0
+    motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+
+    while not button.pressed(button.LEFT):
+        L = color_sensor.reflection(port.C)
+        R = color_sensor.reflection(port.D)
+
+        #await asyncio.sleep(0.1)# Add a small delay to avoid high-frequency printing
+            ########## P I D ############
+        Error = L - R
+
+        P = Error
+        I = I + Error
+        D = Last_Error
+
+        PIDturn = (Kp * P) + (Kd * D) + (Ki * I)
+        Last_Error = Error
+
+        # current_time = time.time() - start_time# Aktuelle Zeit seit dem Start
+        i = i+1
+        pid_values.append(Error)# Speichere den PID-Wert für den Plot
+        time_values.append(i)# Speichere die aktuelle Zeit
+
+        linegraph.plot(0, x=i, y=setPoint)# Plotte den Sollwert
+        linegraph.plot(9, x=i, y=Error)
+        #linegraph.plot(6, x=i, y=D)
+        #linegraph.plot(7, x=i, y=I)
+        linegraph.plot(3, x=i, y=PIDturn)# Plotte den aktuellen PID-Wert
+        linegraph.show(True)
+
+
+        motor.run(port.B, int(PIDturn - DriveSpeed))
+        motor.run(port.A, int(PIDturn + DriveSpeed))
+
+        
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
